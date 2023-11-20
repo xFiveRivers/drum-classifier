@@ -2,12 +2,12 @@ import os
 import sys
 
 folder = str(sys.argv[1])
-# folder = 'hi_hat'
-
-count = 1
+# folder = 'hi-hat'
 
 folder_path = f'data/_seperated/{folder}'
 files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
+
+count = 1
 
 for file_name in files:
     if count < 10:
