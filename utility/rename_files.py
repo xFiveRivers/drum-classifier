@@ -4,7 +4,7 @@ import sys
 folder = str(sys.argv[1])
 # folder = 'hi_hat'
 
-count = 0
+count = 1
 
 folder_path = f'data/_seperated/{folder}'
 files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
