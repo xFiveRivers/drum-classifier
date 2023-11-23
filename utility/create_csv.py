@@ -3,7 +3,7 @@ import os
 import re
 import librosa
 
-data_folder = 'data/wavefiles'
+data_folder = 'data/raw'
 wav_files = os.listdir(data_folder)
 
 concat_result = ' '.join(wav_files)
@@ -13,7 +13,7 @@ unique_classes = list(set(class_list))
 signal_lengths = []
 
 for f in wav_files:
-    signal, rate = librosa.load('data/wavefiles/'+f, sr=None)
+    signal, rate = librosa.load('data/raw/'+f, sr=None)
     signal_lengths.append(signal.shape[0] / rate)
 
 with open('data/samples.csv', 'w', newline='') as f:
