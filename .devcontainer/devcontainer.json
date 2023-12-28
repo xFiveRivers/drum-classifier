@@ -1,5 +1,6 @@
 {
-    "name": "drum_tracker",
     "build": { "dockerfile": "Dockerfile" },
-    "forwardPorts": [3000]
+    "runArgs": [
+        "--gpus=all"
+	]
 }
