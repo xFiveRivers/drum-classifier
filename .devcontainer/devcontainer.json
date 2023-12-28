@@ -1,5 +1,16 @@
 {
     "build": { "dockerfile": "Dockerfile" },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-azuretools.vscode-docker",
+                "ms-python.vscode-pylance",
+                "ms-python.python"
+            ]
+        }
+    },
+
     "runArgs": [
         "--gpus=all"
 	]
