@@ -1,10 +1,5 @@
 {
     "name": "drum_tracker",
-    "image": "tensorflow/tensorflow:latest-gpu",
-    "runArgs": [
-        "pip install -r requirements.txt",
-        "sudo apt-get update",
-        "sudo apt-get install git"
-    ],
+    "build": { "dockerfile": "Dockerfile" },
     "forwardPorts": [3000]
 }
