@@ -11,7 +11,7 @@
         }
     },
 
-    "postCreateCommand": "cd data/clean && unzip clean.zip -u && cd ../.."
+    "postCreateCommand": "cd data/clean && unzip -u clean.zip && cd ../.."
 
     "runArgs": [
         "--gpus=all"
