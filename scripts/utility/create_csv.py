@@ -34,5 +34,5 @@ for f in wav_files:
 # Create CSV file
 with open('data/samples.csv', 'w', newline='') as f:
     writer = csv.writer(f)
-    writer.writerow(['file', 'length', 'class'])
+    writer.writerow(['file', 'length', 'class', 'class_id'])
     writer.writerows(zip(wav_files, signal_lengths, class_list, class_id_list))
