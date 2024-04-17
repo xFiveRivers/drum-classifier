@@ -12,7 +12,7 @@ Options:
 """
 
 
-from classes import FileArchiver
+from utility import FileArchiver
 from docopt import docopt
 
 
