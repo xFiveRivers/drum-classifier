@@ -105,7 +105,7 @@ class EDA():
         ax.imshow(
             librosa.power_to_db(spec),
             origin='lower', 
-            aspect='auto'
+            aspect='auto',
             interpolation='nearest'
         )
         ax.set_title(title)
