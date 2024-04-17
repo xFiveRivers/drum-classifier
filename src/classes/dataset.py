@@ -23,7 +23,7 @@ class DrumTrackerDataset(Dataset):
             n_mfcc = N_MFCC,
             melkwargs = {
                 'n_fft': N_FFT,
-                'hop_len': HOP_LEN,
+                'hop_length': HOP_LEN,
                 'n_mels': N_MELS
             }
         )
