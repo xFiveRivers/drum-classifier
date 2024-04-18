@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import torch
+import torchaudio
 
 
 class EDA():
@@ -69,7 +70,7 @@ class EDA():
         rate : int, optional
             Sample rate of signal.
         title : str, optional
-            Title of the plot, by default 'Waveform'.
+            Title of the file, by default 'Waveform'.
         ax : np.ndarray | None, optional
             Axes to plot on, by default None
         """
@@ -95,7 +96,7 @@ class EDA():
         spec : torch.Tensor
             Tensor containing the spectogram of a signal
         title : str, optional
-            Title of the plot, by default 'Spectrogram'
+            Title of the file, by default 'Spectrogram'
         ax : np.ndarray | None, optional
             Axes to plot on, by default None
         """
@@ -109,3 +110,42 @@ class EDA():
             interpolation='nearest'
         )
         ax.set_title(title)
+
+    
+    def extract_features(self, df: pd.DataFrame, spec_trans, mel_spec_trans,
+                         mfcc_trans, data_type: str = 'raw',
+                         random_state: int = 42,):
+        """Extracts the spectograms and MFCCs of signals.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            Dataframe containing sample metadata.
+        spec_trans : _type_
+            Spectrogram transformation.
+        mfcc_trans : _type_
+            MFCC Transformation.
+
+        Returns
+        -------
+        dict, dict, dict
+            Dictionary of signals, spectrograms, and MFCCs.
+        """
+
+        signals = {}
+        specs = {}
+        mel_specs = {}
+        mfccs = {}
+
+        for label in df['class'].unique():
+            class_df = df[df['class'] == label]
+            f_names = list(class_df.sample(5, random_state=random_state).file)
+
+            for f in f_names:
+                signal, _ = torchaudio.load(f'data/{data_type}/'+f)
+                signals[f] = signal
+                specs[f] = spec_trans(signal[0])
+                mel_specs[f] = mel_spec_trans(signal[0])
+                mfccs[f] = mfcc_trans(signal)
+        
+        return signals, specs, mel_specs, mfccs
