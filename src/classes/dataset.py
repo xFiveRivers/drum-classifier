@@ -13,19 +13,26 @@ class DrumTrackerDataset(Dataset):
         self.data_dir = data_dir
         
         SAMPLE_FREQ = 16000
-        N_MFCC = 512
-        N_FFT = 1024
-        HOP_LEN = 512
-        N_MELS = 512
+        # N_MFCC = 256
+        N_FFT = 256
+        HOP_LEN = N_FFT // 8
+        N_MELS = 256
 
-        self.mfcc_transform = T.MFCC(
+        # self.mfcc_transform = T.MFCC(
+        #     sample_rate = SAMPLE_FREQ,
+        #     n_mfcc = N_MFCC,
+        #     melkwargs = {
+        #         'n_fft': N_FFT,
+        #         'hop_length': HOP_LEN,
+        #         'n_mels': N_MELS
+        #     }
+        # )
+
+        self.mel_spec_trans = T.MelSpectrogram(
             sample_rate = SAMPLE_FREQ,
-            n_mfcc = N_MFCC,
-            melkwargs = {
-                'n_fft': N_FFT,
-                'hop_length': HOP_LEN,
-                'n_mels': N_MELS
-            }
+            n_fft = N_FFT,
+            hop_length = HOP_LEN,
+            n_mels = N_MELS
         )
 
 
@@ -70,6 +77,7 @@ class DrumTrackerDataset(Dataset):
         signal, _ = torchaudio.load(self.file_dir+file)
 
         # Get MFCCs
-        mfcc = self.mfcc_transform(signal)
+        # mfcc = self.mfcc_transform(signal)
+        mel_spec = self.mel_spec_trans(signal)
 
-        return mfcc, label
+        return mel_spec, label
