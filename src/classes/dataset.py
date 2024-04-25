@@ -8,7 +8,7 @@ from torch.utils.data import Dataset
 class DrumTrackerDataset(Dataset):
     def __init__(self, 
                  data_dir: str = 'data/clean/', 
-                 csv_filename: str = 'samples.csv'):
+                 csv_filename: str = '_samples.csv'):
         self.samples_df = pd.read_csv(data_dir+csv_filename, index_col=False)
         self.data_dir = data_dir
         
