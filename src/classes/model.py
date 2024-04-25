@@ -13,7 +13,7 @@ class CNN_Model(nn.Module):
         CONV_1_N_OUT = 16
         CONV_2_N_OUT = 32
         CONV_3_N_OUT = 64
-        N_OUT = 64
+        N_OUT = 128
 
         CONV_KERNAL_SIZE = 3
         STRIDE = 1
@@ -95,7 +95,10 @@ class CNN_Model(nn.Module):
         self.linear1 = nn.Linear(linear_input, self.LINEAR_1_OUT)
 
         logits = self.dense(output)
-        pred = self.softmax(logits)
+        # pred = self.softmax(logits)
+
+        return logits
+
 
 if __name__ == '__main__':
     cnn = CNN_Model()
