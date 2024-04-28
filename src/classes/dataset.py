@@ -74,7 +74,7 @@ class DrumTrackerDataset(Dataset):
         ]
 
         # Load signal
-        signal, _ = torchaudio.load(self.file_dir+file)
+        signal, _ = torchaudio.load(self.data_dir+file)
 
         # Get MFCCs
         # mfcc = self.mfcc_transform(signal)
