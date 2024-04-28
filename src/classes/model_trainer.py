@@ -7,7 +7,7 @@ class ModelTrainer():
 
     def __init__(self, model, loss_fn, optim_fn, dataset,
                  EPOCHS: int = 100, BATCH_SIZE: int = 32,
-                 rand_seed: int|None = None, train_split: float = 0.7,
+                 rand_seed: int = 42, train_split: float = 0.7,
                  test_split: float = 0.3):
         self.model = model
         self.loss_fn = loss_fn
