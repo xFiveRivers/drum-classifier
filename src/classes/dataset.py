@@ -70,7 +70,7 @@ class DrumTrackerDataset(Dataset):
 
         # Get sample class
         label = self.samples_df.iloc[
-            idx, self.samples_df.columns.get_loc('class')
+            idx, self.samples_df.columns.get_loc('class_id')
         ]
 
         # Load signal
