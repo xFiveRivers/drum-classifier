@@ -48,10 +48,10 @@ class ModelTrainer():
             with torch.inference_mode():
                 test_loss, test_acc = self._training(self.test_dataloader)
 
-            if epoch % 5 == 0:
+            if epoch % 2 == 0:
                 self.epoch_counts.append(epoch + 1)
-                self.train_losses.append(train_loss.detach().numpy())
-                self.test_losses.apppend(test_loss.detach().numpy())
+                self.train_losses.append(train_loss.detach().cpu().numpy())
+                self.test_losses.append(test_loss.detach().cpu().numpy())
                 print(f'Epoch: {epoch} | \
                     Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f} | \
                     Test Loss: {test_loss:.4f}, Test Acc: {test_acc:.2f}')
@@ -61,7 +61,6 @@ class ModelTrainer():
 
     def _training(self, dataloader):
         for input, target in dataloader:
-            print(type(input), type(target))
             input, target = input.to(self.device), target.to(self.device)
 
             # Get  logits, predictions, and loss
@@ -79,6 +78,8 @@ class ModelTrainer():
             self.device = 'cuda'
         else:
             self.device = 'cpu'
+
+        self.model.to(self.device)
 
         torch.manual_seed(rand_seed)
         torch.cuda.manual_seed(rand_seed)
