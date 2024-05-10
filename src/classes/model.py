@@ -20,11 +20,9 @@ class CNN_Model(nn.Module):
         PADDING = 2
         POOL_KERNAL_SIZE = 2
 
-        LINEAR_1_IN = 128 * 17 * 2
-        self.LINEAR_1_OUT = 128
-        self.linear1 = nn.Linear(LINEAR_1_IN, self.LINEAR_1_OUT)
+        LINEAR_1_IN = 118272
+        LINEAR_1_OUT = 128
         LINEAR_2_OUT = 32
-        LINEAR_3_OUT = n_classes
 
         # === NETWORK LAYERS === #
         self.conv1 = nn.Sequential(
@@ -35,8 +33,7 @@ class CNN_Model(nn.Module):
                 stride = STRIDE,
                 padding = PADDING
             ),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size = POOL_KERNAL_SIZE)
+            nn.ReLU()
         )
 
         self.conv2 = nn.Sequential(
@@ -47,8 +44,7 @@ class CNN_Model(nn.Module):
                 stride =  STRIDE,
                 padding = PADDING
             ),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size = POOL_KERNAL_SIZE)
+            nn.ReLU()
         )
 
         self.conv3 = nn.Sequential(
@@ -59,8 +55,7 @@ class CNN_Model(nn.Module):
                 stride =  STRIDE,
                 padding = PADDING
             ),
-            nn.ReLU(),
-            nn.MaxPool2d(kernel_size = POOL_KERNAL_SIZE)
+            nn.ReLU()
         )
 
         self.conv4 = nn.Sequential(
@@ -75,14 +70,14 @@ class CNN_Model(nn.Module):
             nn.MaxPool2d(kernel_size = POOL_KERNAL_SIZE)
         )
 
+        self.dropout = nn.Dropout(p=0.5)
+
         self.dense = nn.Sequential(
             nn.Flatten(),
-            self.linear1,
-            nn.Linear(self.LINEAR_1_OUT, LINEAR_2_OUT),
+            nn.Linear(LINEAR_1_IN, LINEAR_1_OUT),
+            nn.Linear(LINEAR_1_OUT, LINEAR_2_OUT),
             nn.Linear(LINEAR_2_OUT, n_classes)
         )
-
-        self.softmax = nn.Softmax(dim=1)
 
 
     def forward(self, X):
@@ -90,12 +85,9 @@ class CNN_Model(nn.Module):
         output = self.conv2(output)
         output = self.conv3(output)
         output = self.conv4(output)
-
-        linear_input = output.size()[1] * output.size()[2] * output.size()[3]
-        self.linear1 = nn.Linear(linear_input, self.LINEAR_1_OUT)
+        output = self.dropout(output)
 
         logits = self.dense(output)
-        # pred = self.softmax(logits)
 
         return logits
 
