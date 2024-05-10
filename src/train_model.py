@@ -1,7 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from classes import DrumTrackerDataset, Model_00, ModelTrainer
+from classes import DrumTrackerDataset, ModelTrainer
+from models import Model_00
 
 
 def main():
