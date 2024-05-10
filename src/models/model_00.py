@@ -81,12 +81,7 @@ class Model_00(nn.Module):
 
 
     def forward(self, X):
-        output = self.conv1(X)
-        output = self.conv2(output)
-        output = self.conv3(output)
-        output = self.conv4(output)
-        output = self.dropout(output)
-
+        output = self.dropout(self.conv4(self.conv3(self.conv2(self.conv1(X)))))
         logits = self.dense(output)
 
         return logits
