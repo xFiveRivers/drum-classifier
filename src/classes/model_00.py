@@ -3,7 +3,7 @@ import torch.nn as nn
 from torchsummary import summary
 
 
-class CNN_Model(nn.Module):
+class Model_00(nn.Module):
 
     def __init__(self, n_input: int = 1, n_classes: int = 3):
         super().__init__()
@@ -93,5 +93,5 @@ class CNN_Model(nn.Module):
 
 
 if __name__ == '__main__':
-    cnn = CNN_Model()
-    summary(cnn.cuda(), (1, 256, 6))
+    model = Model_00()
+    summary(model.cuda(), (1, 256, 6))

@@ -1,15 +1,15 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from classes import DrumTrackerDataset, CNN_Model, ModelTrainer
+from classes import DrumTrackerDataset, Model_00, ModelTrainer
 
 
 def main():
     dataset = DrumTrackerDataset()
-    cnn_model = CNN_Model()
+    model = Model_00()
     loss_fn = nn.CrossEntropyLoss()
-    optim_fn = optim.Adam(params=cnn_model.parameters(), lr=0.001)
-    trainer = ModelTrainer(cnn_model, loss_fn, optim_fn, dataset)
+    optim_fn = optim.Adam(params=model.parameters(), lr=0.001)
+    trainer = ModelTrainer(model, loss_fn, optim_fn, dataset)
     trainer.train_model(EPOCHS=10, BATCH_SIZE=64)
 
 
