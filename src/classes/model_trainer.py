@@ -20,9 +20,17 @@ class ModelTrainer():
         self.train_dataloader = None
         self.test_dataloader = None
 
-        self.epoch_counts = []
-        self.train_losses = []
-        self.test_losses = []
+        self.results = {
+            'epochs': [],
+            'train_loss': [],
+            'train_acc': [],
+            'test_loss': [],
+            'test_acc': []
+        }
+
+        # self.epoch_counts = []
+        # self.train_losses = []
+        # self.test_losses = []
 
 
     def train_model(self, EPOCHS: int = 100, BATCH_SIZE: int = 32,
@@ -34,42 +42,94 @@ class ModelTrainer():
         print(f'Beginning training with {EPOCHS} epochs...')
         
         for epoch in range(EPOCHS):
-            # Set model to training mode
-            self.model.train()
-            train_loss, train_acc = self._training(self.train_dataloader)
+            # Train epoch
+            train_loss, train_acc = self._training_step(self.train_dataloader)
 
-            # Gradient descent
-            self.optim_fn.zero_grad()
-            train_loss.backward()
-            self.optim_fn.step()
+            # Evaluate epoch
+            test_loss, test_acc = self._evaluation_step(self.test_dataloader)
 
-            # Set model to evaluation mode
-            self.model.eval()
-            with torch.inference_mode():
-                test_loss, test_acc = self._training(self.test_dataloader)
+            # Save epoch results
+            self.results['epochs'].append(epoch + 1)
+            self.results['train_loss'].append(train_loss.detach().cpu().numpy())
+            self.results['train_acc'].append(train_acc.detach().cpu().numpy())
+            self.results['test_loss'].append(test_loss.detach().cpu().numpy())
+            self.results['test_acc'].append(test_acc.detach().cpu().numpy())
 
-            if epoch % 2 == 0:
-                self.epoch_counts.append(epoch + 1)
-                self.train_losses.append(train_loss.detach().cpu().numpy())
-                self.test_losses.append(test_loss.detach().cpu().numpy())
-                print(f'Epoch: {epoch} | \
-                    Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f} | \
-                    Test Loss: {test_loss:.4f}, Test Acc: {test_acc:.2f}')
+            # Print update message
+            if (epoch + 1) % 1 == 0:
+                update_message = (
+                    f'Epoch: {epoch + 1} | '
+                    f'Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f} | '
+                    f'Test Loss: {test_loss:.4f}, Test Acc: {test_acc:.2f}'
+                )
+                print(update_message)
                 
         print('Training complete!')
+        # print(self.results)SS
 
 
-    def _training(self, dataloader):
+    def _training_step(self, dataloader):
+        train_loss, train_acc = 0, 0
+
+        self.model.train()
+
         for input, target in dataloader:
             input, target = input.to(self.device), target.to(self.device)
 
-            # Get  logits, predictions, and loss
+            # Get logits from model (forward pass)
             logits = self.model(input)
-            preds = torch.softmax(logits, dim=1).argmax(dim=1)
-            loss = self.loss_fn(logits, target)
-            acc = torch.sum(preds == target) / preds.size(0)
 
-        return loss, acc
+            # Calculate loss
+            batch_loss = self.loss_fn(logits, target)
+            train_loss += batch_loss
+
+            # Gradient descent
+            self.optim_fn.zero_grad()
+            batch_loss.backward()
+            self.optim_fn.step()
+
+            # Calculate predictions
+            preds = torch.softmax(logits, dim=1).argmax(dim=1)
+
+            # Calculate accuracy
+            batch_acc = torch.sum(preds == target) / preds.size(0)
+            train_acc += batch_acc
+        
+        # Average out metrics
+        train_loss = train_loss / len(dataloader)
+        train_acc = train_acc / len(dataloader)
+
+        return train_loss, train_acc
+    
+
+    def _evaluation_step(self, dataloader):
+        eval_loss, eval_acc = 0, 0
+
+        self.model.eval()
+
+        with torch.inference_mode():
+            for input, target in dataloader:
+                input, target = input.to(self.device), target.to(self.device)
+
+                # Get logits from model (forward pass)
+                logits = self.model(input)
+
+                # Calculate loss
+                batch_loss = self.loss_fn(logits, target)
+                eval_loss += batch_loss
+
+                # Calculate predictions
+                preds = torch.softmax(logits, dim=1).argmax(dim=1)
+
+                # Calculate accuracy
+                batch_acc = torch.sum(preds == target) / preds.size(0)
+                eval_acc += batch_acc
+        
+        # Average out metrics
+        eval_loss = eval_loss / len(dataloader)
+        eval_acc = eval_acc / len(dataloader)
+
+        return eval_loss, eval_acc
 
 
     def _initalize_device(self, rand_seed):
@@ -90,7 +150,6 @@ class ModelTrainer():
 
     def _initialize_dataloaders(self, BATCH_SIZE: int, rand_seed: int,
                                 train_split: float, test_split: float):
-        print('Splitting dataset...')
         generator = torch.Generator().manual_seed(rand_seed)
         train_data, test_data = random_split(
             self.dataset, 
@@ -98,16 +157,16 @@ class ModelTrainer():
             generator=generator
         )
 
-        print('Initializing dataloader for training...')
         self.train_dataloader = DataLoader(
             train_data,
             BATCH_SIZE,
             shuffle = True,
-            generator = generator)
+            generator = generator,
+            pin_memory = True)
         
-        print('Initializing dataloader for testing...')
         self.test_dataloader = DataLoader(
             test_data,
             BATCH_SIZE,
             shuffle = True,
-            generator = generator)
+            generator = generator,
+            pin_memory = True)
