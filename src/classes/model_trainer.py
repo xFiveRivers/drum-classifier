@@ -5,16 +5,12 @@ from torch.utils.data import random_split
 
 class ModelTrainer():
 
-    def __init__(self, model, loss_fn, optim_fn, dataset):
+    def __init__(self, model, loss_fn, optim_fn, scheduler, dataset):
         self.model = model
         self.loss_fn = loss_fn
         self.optim_fn = optim_fn
+        self.scheduler = scheduler
         self.dataset = dataset
-        # self.EPOCHS = EPOCHS
-        # self.BATCH_SIZE = BATCH_SIZE,
-        # self.rand_seed = rand_seed
-        # self.train_split = train_split
-        # self.test_split = test_split
         self.device = 'cuda'
 
         self.train_dataloader = None
@@ -27,10 +23,6 @@ class ModelTrainer():
             'test_loss': [],
             'test_acc': []
         }
-
-        # self.epoch_counts = []
-        # self.train_losses = []
-        # self.test_losses = []
 
 
     def train_model(self, EPOCHS: int = 100, BATCH_SIZE: int = 32,
@@ -60,7 +52,8 @@ class ModelTrainer():
                 update_message = (
                     f'Epoch: {epoch + 1} | '
                     f'Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f} | '
-                    f'Test Loss: {test_loss:.4f}, Test Acc: {test_acc:.2f}'
+                    f'Test Loss: {test_loss:.4f}, Test Acc: {test_acc:.2f} | '
+                    f'LR = {self.scheduler.get_last_lr()}'
                 )
                 print(update_message)
                 
@@ -94,6 +87,9 @@ class ModelTrainer():
             # Calculate accuracy
             batch_acc = torch.sum(preds == target) / preds.size(0)
             train_acc += batch_acc
+
+        # Step scheduler
+        self.scheduler.step()
         
         # Average out metrics
         train_loss = train_loss / len(dataloader)

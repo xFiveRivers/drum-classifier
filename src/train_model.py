@@ -14,6 +14,7 @@ Options:
 
 import torch.nn as nn
 import torch.optim as optim
+import torch.optim.lr_scheduler as lr_scheduler
 from classes import DrumTrackerDataset, ModelTrainer
 from docopt import docopt
 from models import Model_00
@@ -30,10 +31,11 @@ def main(epochs, lr, batch):
 
     # Get loss and optimizer functions
     loss_fn = nn.CrossEntropyLoss()
-    optim_fn = optim.Adam(params=model.parameters(), lr=lr)
+    optim_fn = optim.AdamW(params=model.parameters(), lr=lr, weight_decay=0.01)
+    scheduler = lr_scheduler.ExponentialLR(optim_fn, gamma=0.90)
 
     # Train model
-    trainer = ModelTrainer(model, loss_fn, optim_fn, dataset)
+    trainer = ModelTrainer(model, loss_fn, optim_fn, scheduler, dataset)
     trainer.train_model(EPOCHS=epochs, BATCH_SIZE=batch)
 
 
