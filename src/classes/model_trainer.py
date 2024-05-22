@@ -1,3 +1,5 @@
+import pandas as pd
+import time
 import torch
 from torch.utils.data import DataLoader
 from torch.utils.data import random_split
@@ -28,12 +30,17 @@ class ModelTrainer():
     def train_model(self, EPOCHS: int = 100, BATCH_SIZE: int = 32,
                     train_split: float = 0.7, test_split: float = 0.3,
                     rand_seed: int = 42):
+        
         self._initalize_device(rand_seed)
         self._initialize_dataloaders(BATCH_SIZE, rand_seed,
                                      train_split, test_split)
+        
         print(f'Beginning training with {EPOCHS} epochs...')
         
         for epoch in range(EPOCHS):
+            # Get scheduler learning rate
+            lr = self.scheduler.get_last_lr()[0]
+
             # Train epoch
             train_loss, train_acc = self._training_step(self.train_dataloader)
 
@@ -53,12 +60,13 @@ class ModelTrainer():
                     f'Epoch: {epoch + 1} | '
                     f'Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f} | '
                     f'Test Loss: {test_loss:.4f}, Test Acc: {test_acc:.2f} | '
-                    f'LR = {self.scheduler.get_last_lr()}'
+                    f'LR = {lr:.4f}'
                 )
                 print(update_message)
-                
+        
+        pd.results.to_csv(f'results/{int(time.time())}.csv')
+
         print('Training complete!')
-        # print(self.results)SS
 
 
     def _training_step(self, dataloader):

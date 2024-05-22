@@ -17,7 +17,7 @@ import torch.optim as optim
 import torch.optim.lr_scheduler as lr_scheduler
 from classes import DrumTrackerDataset, ModelTrainer
 from docopt import docopt
-from models import Model_00
+from models import Model_00, Model_01
 
 
 # Parse args from CLI
@@ -27,12 +27,12 @@ args = docopt(__doc__)
 def main(epochs, lr, batch):
     # Instatiate classes
     dataset = DrumTrackerDataset()
-    model = Model_00()
+    model = Model_01()
 
     # Get loss and optimizer functions
     loss_fn = nn.CrossEntropyLoss()
     optim_fn = optim.AdamW(params=model.parameters(), lr=lr, weight_decay=0.01)
-    scheduler = lr_scheduler.ExponentialLR(optim_fn, gamma=0.90)
+    scheduler = lr_scheduler.ExponentialLR(optim_fn, gamma=0.95)
 
     # Train model
     trainer = ModelTrainer(model, loss_fn, optim_fn, scheduler, dataset)

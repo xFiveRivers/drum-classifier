@@ -3,7 +3,7 @@ import torch.nn as nn
 from torchsummary import summary
 
 
-class Model_00(nn.Module):
+class Model_01(nn.Module):
 
     def __init__(self, n_input: int = 1, n_classes: int = 3):
         super().__init__()
@@ -20,7 +20,7 @@ class Model_00(nn.Module):
         PADDING = 2
         POOL_KERNAL_SIZE = 2
 
-        LINEAR_1_IN = 118272
+        LINEAR_1_IN = 34304
         LINEAR_1_OUT = 128
         LINEAR_2_OUT = 32
 
@@ -44,7 +44,8 @@ class Model_00(nn.Module):
                 stride =  STRIDE,
                 padding = PADDING
             ),
-            nn.ReLU()
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size = POOL_KERNAL_SIZE)
         )
 
         self.conv3 = nn.Sequential(
@@ -70,7 +71,7 @@ class Model_00(nn.Module):
             nn.MaxPool2d(kernel_size = POOL_KERNAL_SIZE)
         )
 
-        self.dropout = nn.Dropout(p=0.5)
+        self.dropout = nn.Dropout(p=0.2)
 
         self.dense = nn.Sequential(
             nn.Flatten(),
@@ -92,5 +93,5 @@ class Model_00(nn.Module):
 
 
 if __name__ == '__main__':
-    model = Model_00()
+    model = Model_01()
     summary(model.cuda(), (1, 256, 6))
