@@ -88,7 +88,7 @@ class Model_00(nn.Module):
     
 
     def get_name(self):
-        return('model_01')
+        return('model_00')
 
 
 if __name__ == '__main__':
