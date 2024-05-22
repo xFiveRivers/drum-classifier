@@ -64,7 +64,8 @@ class ModelTrainer():
                 )
                 print(update_message)
         
-        pd.results.to_csv(f'results/{int(time.time())}.csv')
+        # Save training results to file
+        self._save_results()
 
         print('Training complete!')
 
@@ -174,3 +175,11 @@ class ModelTrainer():
             shuffle = True,
             generator = generator,
             pin_memory = True)
+        
+    
+    def _save_results(self):
+        pd.DataFrame(self.results).to_csv(
+            f'results/{self.model.get_name()}_{int(time.time())}.csv',
+            header = True,
+            index = False
+        )
