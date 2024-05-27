@@ -12,12 +12,13 @@ Options:
 """
 
 
+import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.optim.lr_scheduler as lr_scheduler
 from classes import DrumTrackerDataset, ModelTrainer
 from docopt import docopt
-from models import Model_00, Model_01
+from models import Model_00, Model_01, Model_02
 
 
 # Parse args from CLI
@@ -27,7 +28,7 @@ args = docopt(__doc__)
 def main(epochs, lr, batch):
     # Instatiate classes
     dataset = DrumTrackerDataset()
-    model = Model_01()
+    model = Model_02()
 
     # Get loss and optimizer functions
     loss_fn = nn.CrossEntropyLoss()
@@ -37,6 +38,9 @@ def main(epochs, lr, batch):
     # Train model
     trainer = ModelTrainer(model, loss_fn, optim_fn, scheduler, dataset)
     trainer.train_model(EPOCHS=epochs, BATCH_SIZE=batch)
+
+    # Save model
+    torch.save(model.state_dict(), 'results/models/model_02.pt')
 
 
 if __name__ == '__main__':
