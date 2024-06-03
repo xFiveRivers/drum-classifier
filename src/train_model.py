@@ -40,7 +40,7 @@ def main(epochs, lr, batch):
     trainer.train_model(EPOCHS=epochs, BATCH_SIZE=batch)
 
     # Save model
-    torch.save(model, 'results/models/model_02.pt')
+    torch.save(model.state_dict(), 'results/models/model_02.pt')
 
 
 if __name__ == '__main__':
