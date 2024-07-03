@@ -3,6 +3,7 @@ import time
 import torch
 from torch.utils.data import DataLoader
 from torch.utils.data import random_split
+from torcheval.metrics.functional import multiclass_f1_score
 
 
 class ModelTrainer():
@@ -22,8 +23,10 @@ class ModelTrainer():
             'epochs': [],
             'train_loss': [],
             'train_acc': [],
+            'train_f1': [],
             'test_loss': [],
-            'test_acc': []
+            'test_acc': [],
+            'test_f1': []
         }
 
 
@@ -42,24 +45,26 @@ class ModelTrainer():
             lr = self.scheduler.get_last_lr()[0]
 
             # Train epoch
-            train_loss, train_acc = self._training_step(self.train_dataloader)
+            train_loss, train_acc, train_f1 = self._training_step(self.train_dataloader)
 
             # Evaluate epoch
-            test_loss, test_acc = self._evaluation_step(self.test_dataloader)
+            test_loss, test_acc, test_f1 = self._evaluation_step(self.test_dataloader)
 
             # Save epoch results
             self.results['epochs'].append(epoch + 1)
             self.results['train_loss'].append(train_loss.detach().cpu().numpy())
             self.results['train_acc'].append(train_acc.detach().cpu().numpy())
+            self.results['train_f1'].append(train_f1.detach().cpu().numpy())
             self.results['test_loss'].append(test_loss.detach().cpu().numpy())
             self.results['test_acc'].append(test_acc.detach().cpu().numpy())
+            self.results['test_f1'].append(test_f1.detach().cpu().numpy())
 
             # Print update message
             if (epoch + 1) % 1 == 0:
                 update_message = (
                     f'Epoch: {epoch + 1} | '
-                    f'Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f} | '
-                    f'Test Loss: {test_loss:.4f}, Test Acc: {test_acc:.2f} | '
+                    f'Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}, Train F1: {train_f1:.2f} | '
+                    f'Test Loss: {test_loss:.4f}, Test Acc: {test_acc:.2f}, Test F1: {test_f1:.2f} | '
                     f'LR = {lr:.4f}'
                 )
                 print(update_message)
@@ -71,7 +76,7 @@ class ModelTrainer():
 
 
     def _training_step(self, dataloader):
-        train_loss, train_acc = 0, 0
+        train_loss, train_acc, train_f1 = 0, 0, 0
 
         self.model.train()
 
@@ -95,7 +100,10 @@ class ModelTrainer():
 
             # Calculate accuracy
             batch_acc = torch.sum(preds == target) / preds.size(0)
+            batch_f1 = multiclass_f1_score(preds, target, num_classes=3)
             train_acc += batch_acc
+            train_f1 += batch_f1
+
 
         # Step scheduler
         self.scheduler.step()
@@ -103,12 +111,13 @@ class ModelTrainer():
         # Average out metrics
         train_loss = train_loss / len(dataloader)
         train_acc = train_acc / len(dataloader)
+        train_f1 = train_f1 / len(dataloader)
 
-        return train_loss, train_acc
+        return train_loss, train_acc, train_f1
     
 
     def _evaluation_step(self, dataloader):
-        eval_loss, eval_acc = 0, 0
+        eval_loss, eval_acc, eval_f1 = 0, 0, 0
 
         self.model.eval()
 
@@ -128,13 +137,16 @@ class ModelTrainer():
 
                 # Calculate accuracy
                 batch_acc = torch.sum(preds == target) / preds.size(0)
+                batch_f1 = multiclass_f1_score(preds, target, num_classes=3)
                 eval_acc += batch_acc
+                eval_f1 += batch_f1
         
         # Average out metrics
         eval_loss = eval_loss / len(dataloader)
         eval_acc = eval_acc / len(dataloader)
+        eval_f1 = eval_f1 / len(dataloader)
 
-        return eval_loss, eval_acc
+        return eval_loss, eval_acc, eval_f1
 
 
     def _initalize_device(self, rand_seed):
