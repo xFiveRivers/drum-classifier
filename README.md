@@ -10,6 +10,38 @@ A convolutional neural-network (CNN) for classifying drum instruments (hi-hats, 
 
 Instructions for installation of the `drum-tracker` environment are the same as the ones found [here](https://github.com/xFiveRivers/drum-tracker).
 
+## **Repository Structure**
+
+The repository has been structured in a way to attempt to minimize nested dependencies while retaining clarity of format. The folder structure tree is as follows:
+
+![Folder Structure](img/file_structure.png)
+
+Where the root folder hosts all of the subfolders and all files pertaining to the main usage of the project.
+
+### Data Folder
+
+The data folder contains the archives of the raw and clean data, as well as the extracted data folders (`raw/` and `clean/`) to be used for data processing and model training.
+
+### Img Folder
+
+Any images used in notebooks or other files are stored here.
+
+### Results Folder
+
+All results from the model training process are stored here. The `models/` subfolder hosts the `state_dict` resulting from a completed training run.
+
+### Src Folder
+
+The core files for running the pipeline can be found here.
+
+The `_legacy/` subfolder contains old scripts or revisions that are no longer useful for the core function of the project, however hold some value to me. 
+
+The `classes/` subfolder containes the classes used for the core pipeline of training the model. 
+
+The `models/` subfolder contains various model architectures exlored during the creation of the project with `model_02` being the final revision.
+
+Finally, the `utility/` subfolder contains any useful scripts that were needed for file management or notebooks.
+
 ## **Usage**
 
 > **Note:** For all project uses, activate the `drum-tracker` environment in the root of the repository.
