@@ -16,7 +16,7 @@ The repository has been structured in a way to attempt to minimize nested depend
 
 ![Folder Structure](img/file_structure.png)
 
-Where the root folder hosts all of the subfolders and all files pertaining to the main usage of the project.
+Where the root folder hosts all of the sub-folders and all files pertaining to the main usage of the project.
 
 ### Data Folder
 
@@ -28,17 +28,17 @@ Any images used in notebooks or other files are stored here.
 
 ### Results Folder
 
-All results from the model training process are stored here. The `models/` subfolder hosts the `state_dict` resulting from a completed training run.
+All results from the model training process are stored here. The `models/` sub-folder hosts the `state_dict` resulting from a completed training run.
 
 ### Src Folder
 
 The core files for running the pipeline can be found here.
 
-The `_legacy/` subfolder contains old scripts or revisions that are no longer useful for the core function of the project, however hold some value to me. 
+The `_legacy/` sub-folder contains old scripts or revisions that are no longer useful for the core function of the project, however hold some value to me. 
 
-The `classes/` subfolder containes the classes used for the core pipeline of training the model. 
+The `classes/` sub-folder contains the classes used for the core pipeline of training the model.
 
-The `models/` subfolder contains various model architectures exlored during the creation of the project with `model_02` being the final revision.
+The `models/` sub-folder contains various model architectures explored during the creation of the project with `model_02` being the final revision.
 
 Finally, the `utility/` subfolder contains any useful scripts that were needed for file management or notebooks.
 
@@ -84,7 +84,7 @@ The model's `state_dict` will be saved under the `results/models/` folder.
 
 ## **Data**
 
-The classifier is trained on percussion samples that I frequently use in hip-hop production. They are low-fidelity in nature and are what you would typically hear in old-school or boom-bap hip-hop tracks. For simplicity only hi-hats, kicks, and snares are used for training with hopes of extending the model's capabilties further down the line.
+The classifier is trained on percussion samples that I frequently use in hip-hop production. They are low-fidelity in nature and are what you would typically hear in old-school or boom-bap hip-hop tracks. For simplicity only hi-hats, kicks, and snares are used for training with hopes of extending the model's capabilities further down the line.
 
 ### **Data Processing**
 
@@ -103,4 +103,3 @@ In order to do classification that is some-what robust to generalization and acc
 6. A `mel-spectrogram` transformation is then applied to the clean data to be used with a `PyTorch` dataloader for the model.
 
 ![Data Flowchart](img/data_flowchart.png)
-
